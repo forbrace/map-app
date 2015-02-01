@@ -280,24 +280,15 @@ function init() {
 }
 
 /**
-    load all external js
-    run init callback & handle error
+    run init & handle error
  */
-$.when( 
-    $.ajax( {
-        url: "//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js",
-        dataType: 'script'
-    } ),
-    $.ajax( {
-        url: "http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js",
-        dataType: 'script'
-    } ),
-    $.ajax( {
-        url: "https://maps.googleapis.com/maps/api/js?libraries=places&callback=init",
-        dataType: 'script'
-    } )
-    )
-    .then( null, function() {
-        $('#log').show().find('.log-message').text('Failed to load resources. Try to reload app later.');
-    } 
-);
+$.ajax({
+    url: 'https://maps.googleapis.com/maps/api/js?libraries=places&callback=init',
+    dataType: 'script',
+    success: function () {
+        // success
+    },
+    error: function () {
+        $('#log').show().find('.log-message').text('Failed to load google maps. Try to reload app later.');
+    }
+});
