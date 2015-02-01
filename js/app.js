@@ -48,7 +48,11 @@ var places = [{
     }
 }];
 
-// Place constructor
+/**
+ * @constructor
+ * @param {Object} place object
+ * @param {Object} map object
+ */
 var Place = function(data, map) {
     var self = this;
     
@@ -104,13 +108,18 @@ var Place = function(data, map) {
 // track infoWindows
 Place.prototype.infoWindows = [];
 
-// close all infoWindows
+/**
+ * Close all infoWindows
+ * @returns undefined
+ */
 Place.prototype.closeAllInfoWindows = function() {
-    // loop all infoWindows
-    // close infoWindows
-    // set red pin icon
-    // set active flag to false
-    // hide panorama
+    /**
+        loop all infoWindows
+        close infoWindows
+        set red pin icon
+        set active flag to false
+        hide panorama
+     */
     for (var i = 0, l = this.infoWindows.length; i < l; i++) {
         this.infoWindows[i].close();
         this.infoWindows[i].marker.setIcon('https://maps.gstatic.com/mapfiles/ms2/micons/red-dot.png');
@@ -118,28 +127,40 @@ Place.prototype.closeAllInfoWindows = function() {
     }
     this.hidePano();
 };
-// show infoWindow
+
+/**
+ * Show infoWindow
+ * @param {Object} google map object
+ * @param {Object} google map marker object
+ * @returns undefined
+ */
 Place.prototype.showInfoWindow = function(map, marker) {
-    // get place details form wikipedia
-    // push this infoWindow to infoWindows array
-    // show this infoWindow and close prev. opened
-    // set blue pin icon
-     // flag as active
+    /**
+        get place details form wikipedia
+        push this infoWindow to infoWindows array
+        show this infoWindow and close prev. opened
+        set blue pin icon
+        flag as active
+     */
     this.getDetails();
     this.infoWindows.push(this.infoWindow);
     this.closeAllInfoWindows();
     this.infoWindow.open(map, marker);
     this.marker.setIcon('https://maps.gstatic.com/mapfiles/ms2/micons/blue-dot.png');
     this.isActive(true);
-    // $('#loader').show();
 };
 
-// show panorama
+/**
+ * Show panorama
+ * @returns undefined
+ */
 Place.prototype.showPano = function() {
-    // Hide any prev opened panorama
-    // Create new one
-    // Bind to position and marker
-    // And make it visible
+    /**
+        Hide any prev opened panorama
+        Create new one
+        Bind to position and marker
+        And make it visible
+     */
     if (this.pano !== null) {
         this.pano.unbind("position");
         this.pano.setVisible(false);
@@ -155,7 +176,10 @@ Place.prototype.showPano = function() {
     this.pano.setVisible(true);
 };
 
-// Hide panorama
+/**
+ * Hide panorama
+ * @returns undefined
+ */
 Place.prototype.hidePano = function() {
     if (this.pano !== null) {
         this.pano.unbind("position");
@@ -164,8 +188,11 @@ Place.prototype.hidePano = function() {
     }
 };
 
-// Get place details from wikipedia asyncronosly with getJSON and 
-// append them to #details
+/**
+ * Get place details from wikipedia asyncronosly with getJSON and 
+ * append them to #details
+ * @returns undefined
+ */
 Place.prototype.getDetails = function() {
     var dataURL = "http://en.wikipedia.org/w/api.php?action=query&prop=extracts|info&format=json&exintro=&inprop=url&iwurl=&rawcontinue=&titles="+ this.name()+"&callback=?";
     $.getJSON(dataURL,function(data, textStatus, jqXHR) {
@@ -185,13 +212,17 @@ Place.prototype.getDetails = function() {
 
 };
 
-// MapViewModel constructor
+/**
+ * @constructor MapViewModel
+ */
 var MapViewModel = function() {
 
     var self = this;
-    // Define observableArray of places, 
-    // observable search query empty str,
-    // and observable current place
+    /**
+        Define observableArray of places,
+        observable search query empty str,
+        and observable current place    
+     */
     self.placeList = ko.observableArray([]);
     self.query = ko.observable('');
     self.currentPlace = ko.observable();
@@ -209,11 +240,13 @@ var MapViewModel = function() {
 
         var map = new google.maps.Map(document.getElementById('map-canvas'),
             mapOptions);
-
-        // loop through the places, 
-        // create place objects from constructor
-        // and push them to the placeList
-        places.forEach(function(place) {
+            
+        /**
+            loop through the places,
+            create place objects from constructor
+            and push them to the placeList
+         */
+            places.forEach(function(place) {
             var place = new Place(place, map);
             self.placeList.push(place);
         });
@@ -236,16 +269,19 @@ var MapViewModel = function() {
 
 };
 
-// ko.applyBindings(new MapViewModel());
-
+/**
+ * Initialize map
+ * @returns undefined
+ */
 function init() {
-    // initialize map
     var map = new MapViewModel();
     google.maps.event.addDomListener(window, 'load', map.initialize);
     ko.applyBindings(map);
 }
 
-// run init & handle error
+/**
+    run init & handle error
+ */
 $.ajax({
     url: 'https://maps.googleapis.com/maps/api/js?libraries=places&callback=init',
     dataType: 'script',
